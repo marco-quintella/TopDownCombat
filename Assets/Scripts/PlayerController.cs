@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private static readonly int MoveX = Animator.StringToHash("moveX");
     private static readonly int MoveY = Animator.StringToHash("moveY");
+    
+    public float direction { get; private set; }
 
     private void Awake()
     {
@@ -45,8 +47,8 @@ public class PlayerController : MonoBehaviour
     private void AdjustPlayerFacingDirection()
     {
         Vector2 mousePosition = (Vector2)Input.mousePosition - new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Vector2 direction = (Vector2)transform.position - mousePosition;
-        _spriteRenderer.flipX = direction.x switch
+        direction = ((Vector2)transform.position - mousePosition).x;
+        _spriteRenderer.flipX = direction switch
         {
             > 0 => true,
             < 0 => false,
