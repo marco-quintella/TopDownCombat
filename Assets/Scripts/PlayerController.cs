@@ -6,8 +6,11 @@ public class PlayerController : MonoBehaviour
     private PlayerControls _playerControls;
     private Vector2 _movement;
     private Rigidbody2D _rb;
-    private Animator _animator;
+    private Animator _animator; 
     private SpriteRenderer _spriteRenderer;
+
+    public bool FacingLeft { get; private set; }
+
     private static readonly int MoveX = Animator.StringToHash("moveX");
     private static readonly int MoveY = Animator.StringToHash("moveY");
     
@@ -48,12 +51,18 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 mousePosition = (Vector2)Input.mousePosition - new Vector2(Screen.width / 2f, Screen.height / 2f);
         direction = ((Vector2)transform.position - mousePosition).x;
-        _spriteRenderer.flipX = direction switch
+
+        switch (direction)
         {
-            > 0 => true,
-            < 0 => false,
-            _ => _spriteRenderer.flipX
-        };
+            case > 0:
+                _spriteRenderer.flipX = true;
+                FacingLeft = true;
+                break;  
+            case < 0:
+                _spriteRenderer.flipX = false;
+                FacingLeft = false;
+                break;
+        }
     }
 
     private void Move()

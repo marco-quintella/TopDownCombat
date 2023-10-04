@@ -1,13 +1,17 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Sword : MonoBehaviour
 {
+    [SerializeField] private GameObject slashAnimationPrefab;
+    [SerializeField] private Transform slashAnimationParent;
+    
     private PlayerControls _playerControls;
     private Animator _animator;
     private PlayerController _playerController;
     private ActiveWeapon _activeWeapon;
+    
+    private GameObject _slashAnimation;
 
     private static readonly int AttackTrigger = Animator.StringToHash("Attack");
 
@@ -37,17 +41,39 @@ public class Sword : MonoBehaviour
     private void Attack(InputAction.CallbackContext _)
     {
         _animator.SetTrigger(AttackTrigger);
+        _slashAnimation = Instantiate(slashAnimationPrefab, slashAnimationParent.position, Quaternion.identity);
+        _slashAnimation.transform.parent = slashAnimationParent;
+    }
+
+    private void SwingUpFlipAnimation()
+    {
+        _slashAnimation.gameObject.transform.rotation = Quaternion.Euler(-180, 0, 0);
+        if (_playerController.FacingLeft)
+        {
+            _slashAnimation.GetComponent<SpriteRenderer>().flipX = true;
+        } 
+    }
+    
+    private void SwingDownFlipAnimation()
+    {
+        _slashAnimation.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+        if (_playerController.FacingLeft)
+        {
+            _slashAnimation.GetComponent<SpriteRenderer>().flipX = true;
+        } 
     }
 
     private void MouseFollowWithOffset()
     {
         float angle = Mathf.Atan2(Input.mousePosition.y, Input.mousePosition.x) * Mathf.Rad2Deg;
+        
+        Transform activeWeaponRotation = _activeWeapon.transform;
 
-        _activeWeapon.transform.rotation = _playerController.direction switch
+        activeWeaponRotation.rotation = _playerController.direction switch
         {
             > 0 => Quaternion.Euler(0, -180, angle),
             < 0 => Quaternion.Euler(0, 0, angle),
-            _ => _activeWeapon.transform.rotation
+            _ => activeWeaponRotation.rotation
         };
     }
 }
