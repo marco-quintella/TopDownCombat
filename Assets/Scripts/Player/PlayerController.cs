@@ -4,22 +4,29 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance { get; private set; }
+
         [SerializeField] private float moveSpeed = 4f;
         private PlayerControls _playerControls;
         private Vector2 _movement;
         private Rigidbody2D _rb;
-        private Animator _animator; 
+        private Animator _animator;
         private SpriteRenderer _spriteRenderer;
 
         public bool FacingLeft { get; private set; }
 
         private static readonly int MoveX = Animator.StringToHash("moveX");
         private static readonly int MoveY = Animator.StringToHash("moveY");
-    
-        public float direction { get; private set; }
+
+        public float Direction { get; private set; }
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+                Destroy(gameObject);
+            else
+                Instance = this;
+
             _playerControls = new PlayerControls();
             _rb = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
@@ -52,14 +59,14 @@ namespace Player
         private void AdjustPlayerFacingDirection()
         {
             Vector2 mousePosition = (Vector2)Input.mousePosition - new Vector2(Screen.width / 2f, Screen.height / 2f);
-            direction = ((Vector2)transform.position - mousePosition).x;
+            Direction = ((Vector2)transform.position - mousePosition).x;
 
-            switch (direction)
+            switch (Direction)
             {
                 case > 0:
                     _spriteRenderer.flipX = true;
                     FacingLeft = true;
-                    break;  
+                    break;
                 case < 0:
                     _spriteRenderer.flipX = false;
                     FacingLeft = false;

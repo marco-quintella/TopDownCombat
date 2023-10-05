@@ -78,7 +78,7 @@ namespace Player
         
             Transform activeWeaponRotation = _activeWeapon.transform;
 
-            switch (_playerController.direction)
+            switch (_playerController.Direction)
             { 
                 case > 0:
                     activeWeaponRotation.rotation = Quaternion.Euler(0, -180, angle);

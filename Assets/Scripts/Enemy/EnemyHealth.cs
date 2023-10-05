@@ -1,3 +1,5 @@
+using System;
+using Player;
 using UnityEngine;
 
 namespace Enemy
@@ -5,8 +7,15 @@ namespace Enemy
     public class EnemyHealth : MonoBehaviour
     {
         [SerializeField] private int initialHealth = 3;
+        
+        private Knockback _knockback;
 
         private int _currentHealth;
+
+        private void Awake()
+        {
+            _knockback = GetComponent<Knockback>();
+        }
 
         private void Start()
         {
@@ -16,7 +25,7 @@ namespace Enemy
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
-            Debug.Log(_currentHealth);
+            _knockback.GetKnockedBack(PlayerController.Instance.transform, 15f);
             DetectDeath();
         }
 
